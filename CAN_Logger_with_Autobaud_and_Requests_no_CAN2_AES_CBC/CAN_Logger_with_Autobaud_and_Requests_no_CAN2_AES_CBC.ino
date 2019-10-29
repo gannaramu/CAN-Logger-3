@@ -1,4 +1,4 @@
-10/*
+/*
  * NMFTA CAN Logger 3 Project   
  * 
  * Arduino Sketch for the CAN Logger 3 to record up to 3 CAN channels using
@@ -47,6 +47,7 @@
 
 
 //included libraries 
+#include "CryptoAccel.h"
 #include <SdFs.h>
 //#include <mcp_can.h>
 #include <FlexCAN.h>
@@ -281,11 +282,7 @@ uint32_t trng(){
     while((RNG_SR & RNG_SR_OREG_LVL(0xF)) == 0); // wait
     return RNG_OR;
 }
-/* K66F  CAU tests   SHA256  AES-CBC
-crypto assist co-processor
-*/
-#include "CryptoAccel.h" //Makes it arduino compatible
-#include "cau_api.h"
+
     
 unsigned char cipher_text[512];
 unsigned char aeskey[16], keysched[4 * 44], in[16], out[16], init_vector[16];
@@ -317,7 +314,7 @@ void aes_cbc_encrypt(const unsigned char *data, unsigned char *cipher_text){
     for (uint8_t i = 0; i < 16; i++){
       in[i] = data[j+i] ^ out[i];
     }
-    cau_aes_encrypt (in, keysched, AES_128_NROUNDS, out); // # 16-byte block
+    mmcau_aes_encrypt (in, keysched, AES_128_NROUNDS, out); // # 16-byte block
     memcpy(&cipher_text[j],out,16);
   }
 }
@@ -848,7 +845,7 @@ void setup(void) {
   iv_key_RNG();
   for (int i = 0; i < sizeof(aeskey); i++)  aeskey[i] = iv_and_key[16+i]; 
   for (int i = 0; i < sizeof(init_vector); i++)  init_vector[i] = iv_and_key[i];
-  cau_aes_set_key(aeskey, 128, keysched);//Set key
+  mmcau_aes_set_key(aeskey, 128, keysched);//Set key
   memcpy(out,init_vector,16); //Load IV
   
   Serial.println("Starting CAN logger.");

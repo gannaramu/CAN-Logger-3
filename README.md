@@ -1,8 +1,17 @@
 # CAN-Logger-3
 
-An open source data logging system for heavy vehicle networks.
+An open source data logging system for heavy vehicle networks using an Arduino Compatible Teensy 3.6
+
+
 
 The docs folder contains schematics, gerber files, and Altium Designer source files. 
+
+## Installation
+Use Ardunio and Teensyduino IDE.
+
+The CryptoAccel library is used and is normally installed with teensyduino.
+https://github.com/PaulStoffregen/CryptoAccel
+
 
 ## Acknowledgements
 
